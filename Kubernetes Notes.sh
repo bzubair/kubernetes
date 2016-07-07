@@ -17,17 +17,6 @@ Tools:
 
 *****Kubernetes*******
 
-
-
-	
-	
-	
-	
-	
-
-
-				
-				
 	- "Services" is a unit that acts as a basic load balancer and ambassador for other containers.
 				Services are an interface to a group of containers so that consumers do not have to worry about anything beyond a single access location
 				* A set of POD working together i.e putting LB frontend and BE can be used under one service
