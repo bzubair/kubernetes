@@ -15,21 +15,7 @@ Container related info:
 Tools:
 - cAdvisors: it takes the resource number and give it a times series. If a vm is resouce is using 100% resource right now then what it was using before
 
-*****Kubernetes*******
-
-	- "Services" is a unit that acts as a basic load balancer and ambassador for other containers.
-				Services are an interface to a group of containers so that consumers do not have to worry about anything beyond a single access location
-				* A set of POD working together i.e putting LB frontend and BE can be used under one service
-	- "Replication Controllers"
-				A replication controller is a framework for defining pods that are meant to be horizontally scaled.
-				This means that if a container temporarily goes down, the replication controller might start up another container.
-				If the first container comes back online, the controller will kill off one of the containers.				 
-	- "Labels"	is basically an arbitrary tag that can be placed on the above work units to mark them as a part of a group.
-				These can then be selected for management purposes and action targeting
-				Each unit can have more than one label, but each unit can only have one entry for each key
-
-
-Kubernetes has several components:
+***********Kubernetes has several components***********
 
 etcd - A highly available key-value store for shared configuration and service discovery.
 flannel - An etcd backed network fabric for containers.
@@ -46,14 +32,34 @@ https://www.youtube.com/watch?v=tA8XNVPZM2w
 1. systemctl stop/disable firewalld
 2. yum -y install ntp, systemctl start/enable/sync ntpd
 
+*************************
+	  PROXY SETTING
+*************************
 
-	**Kube Master Installation**
+On Minions following cnfiguration required
+1. mkdir /etc/systemd/system/docker.service.d
+2. Edit "/etc/systemd/system/docker.service.d/http-proxy.conf " the enter the following configure
+		[Service]
+		Environment="HTTP_PROXY=http://proxy.lbs.alcatel-lucent.com:8000/"
+		Environment="HTTPS_PROXY=https://proxy.lbs.alcatel-lucent.com:8000/"
+3. For no-proxy (OPTIONAL)
+		Environment="HTTP_PROXY=http://proxy.example.com:80/" "NO_PROXY=localhost,127.0.0.1,docker-registry.somecorporation.com"
+4. systemctl daemon-reload
+5. systemctl restart docker
+
+NOTE: MAY BE you need to go to minion and tun "docker images" if you see gcr.io/google_containers/pause then delete this docker image 
+	docker  -D rmi -f 2c40b0526b63
+
+***************************
+Kube Master Installation
+***************************
+
 	1. Install Centos 7.1
 	2. yum -y install etcd kubernetes
 	3. edit /etc/etcd/etcd.conf
 		ETCD_NAME=default
 		ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
-		ETCD_LISTEN_CLIENT_URLS="http://<kubemaster-ip>:2379"
+		ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"
 		ETCD_ADVERTISE_CLIENT_URLS="http://localhost:2379"
 	4. Edit /etc/kubernetes/apiserver
 		KUBE_API_ADDRESS="--address=0.0.0.0"
@@ -63,6 +69,7 @@ https://www.youtube.com/watch?v=tA8XNVPZM2w
 		KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=10.254.0.0/16"
 		KUBE_ADMISSION_CONTROL="--admission_control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ResourceQuota"
 		KUBE_API_ARGS=""
+
 	5. Start and enable etcd kube-apiserver kube-controller-manager kube-scheduler
 	
 	6. Define flannel network configuration in etcd. 
@@ -72,7 +79,10 @@ https://www.youtube.com/watch?v=tA8XNVPZM2w
 	7. Check to see if any Miniosn nodes are added	
 		kubectl get nodes
 
-	**Kubernetes Minions Installation**
+***********************************
+Kubernetes Minions Installation
+***********************************
+
 	1. Install Centos 7.1 with physical drive 20 and another volume group (vdb) atleast 10
 		- create volume and attach to vm
 		- "pvcreate /dev/vdb" (Attached/create second disk to vm)
@@ -110,23 +120,7 @@ kubectl config set contexts.default-context.namespace the-right-prefix
 kubectl config view
 
 
-*************************
-	  PROXY SETTING
-*************************
 
-On Minions following cnfiguration required
-1. mkdir /etc/systemd/system/docker.service.d
-2. Edit "/etc/systemd/system/docker.service.d/http-proxy.conf " the enter the following configure
-		[Service]
-		Environment="HTTP_PROXY=http://proxy.lbs.alcatel-lucent.com:8000/"
-		Environment="HTTPS_PROXY=https://proxy.lbs.alcatel-lucent.com:8000/"
-3. For no-proxy (OPTIONAL)
-		Environment="HTTP_PROXY=http://proxy.example.com:80/" "NO_PROXY=localhost,127.0.0.1,docker-registry.somecorporation.com"
-4. systemctl daemon-reload
-5. systemctl restart docker
-
-NOTE: MAY BE you need to go to minion and tun "docker images" if you see gcr.io/google_containers/pause then delete this docker image 
-	docker  -D rmi -f 2c40b0526b63
 
 *************************
 	  CREATING PODS
