@@ -32,6 +32,19 @@ https://www.youtube.com/watch?v=tA8XNVPZM2w
 1. systemctl stop/disable firewalld
 2. yum -y install ntp, systemctl start/enable/sync ntpd
 
+**********V1.1 REPO***************
+[virt7-docker-common-release]
+name=virt7-docker-common-release
+baseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
+gpgcheck=0
+
+[c71]
+name=CentOS71
+enabled=1
+gpgcheck=0
+baseurl=http://vault.centos.org/7.1.1503/os/x86_64/
+
+- yum install qemu-kvm --disablerepo=* --enablerepo=c71
 *************************
 	  PROXY SETTING
 *************************
