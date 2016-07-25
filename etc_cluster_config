@@ -36,3 +36,7 @@ WantedBy=multi-user.target
         systemctl daemon-reload
         systemctl enable etcd
         systemctl start etcd
+
+8. Verification
+systemctl status etcd --no-pager
+etcdctl --ca-file=/etc/etcd/ca.pem cluster-health
