@@ -1,0 +1,38 @@
+1. Disable Firewalld
+2. Disable NetworkManager
+3. Selinux Permissive
+4. Download etcd binaries on all etcd servers
+        wget https://github.com/coreos/etcd/releases/download/v3.0.1/etcd-v3.0.1-linux-amd64.tar.gz
+        tar -xvf etcd-v3.0.1-linux-amd64.tar.gz
+        cp etcd-v3.0.1-linux-amd64/etcd* /usr/bin/
+        mkdir -p /var/lib/etcd
+5. Create etcd service file on etcd machines
+[Unit]
+Description=etcd
+Documentation=https://github.com/coreos
+
+[Service]
+ExecStart=/usr/bin/etcd --name etcd0 \
+  --initial-advertise-peer-urls http://192.168.0.208:2380 \
+  --listen-peer-urls http://192.168.0.208:2380 \
+  --listen-client-urls http://192.168.0.208:2379,http://127.0.0.1:2379 \
+  --advertise-client-urls http://192.168.0.208:2379 \
+  --initial-cluster-token etcd-cluster-0 \
+  --initial-cluster etcd0=http://192.168.0.208:2380,etcd1=http://192.168.0.207:2380,etcd2=http://192.168.0.209:2380 \
+  --initial-cluster-state new \
+  --data-dir=/var/lib/etcd
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+--> etcd0 is the hostname
+--> 192.168.0.208 is etcd0 host ip address
+
+6. mv etcd.service /etc/systemd/system/
+
+7. Restart services
+        systemctl daemon-reload
+        systemctl enable etcd
+        systemctl start etcd
