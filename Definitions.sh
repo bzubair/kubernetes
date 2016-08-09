@@ -49,6 +49,12 @@ ETCD
 	If ETCD is gone then everything is gone so cluster ETCD servers are recommended
 	Kubernetes uses etcd to store configuration data that can be used by each of the nodes in the cluster. 
 
+NAMESPACES
+	The kube-system namespace is the one where the administrative user (system:admin) typically runs the kube-ui 
+	and dns service, and so on for all the users of the cluster. 
+	This imposes a networking requirement that the services deployed in the “kube-system” namespace should have 
+	reachability to and from pods in all other namespaces.
+	
 FLANNELD
 	This is for overlay network 
 
