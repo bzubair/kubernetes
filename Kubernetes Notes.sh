@@ -57,8 +57,10 @@ On Minions following cnfiguration required
 		Environment="HTTPS_PROXY=https://proxy.lbs.alcatel-lucent.com:8000/"
 3. For no-proxy (OPTIONAL)
 		Environment="HTTP_PROXY=http://proxy.example.com:80/" "NO_PROXY=localhost,127.0.0.1,docker-registry.somecorporation.com"
-4. systemctl daemon-reload
-5. systemctl restart docker
+4. Check of the proxy env variable is set 
+	systemctl show --property=Environment docker 
+5. systemctl daemon-reload
+6. systemctl restart docker
 
 NOTE: MAY BE you need to go to minion and tun "docker images" if you see gcr.io/google_containers/pause then delete this docker image 
 	docker  -D rmi -f 2c40b0526b63
