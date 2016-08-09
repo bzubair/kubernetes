@@ -117,8 +117,9 @@ Kubernetes Minions Installation
 		KUBELET_HOSTNAME="--hostname_override=minion1.lab.local"
 		KUBELET_API_SERVER="--api_servers=http://kubemaster.lab.local:8080"
 		KUBELET_ARGS=""
-	6. Start and enable kube-proxy, kubelet, docker and flanneld services
-	7. Login to Kubemaster and check if node is added "kubectl get nodes"
+	6. Make Sure the proxy setting mentioned above is done before deploying yaml file
+	7. Start and enable kube-proxy, kubelet, docker and flanneld services
+	8. Login to Kubemaster and check if node is added "kubectl get nodes"
 
 
 *************************
