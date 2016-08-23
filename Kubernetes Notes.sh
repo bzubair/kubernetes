@@ -154,6 +154,8 @@ kubectl config view
 			kubectl get events --watch
 			kubectl logs <POD-NAME>
 			kubectl cluster-info
+	--> k delete pod my-nginx3-1085374124-fd5ic --grace-period=0 
+		Kind of force delete the pod
 
 
 Image deployment
